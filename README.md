@@ -24,6 +24,7 @@ npm run dev
 ```
 
 During development open `src/index.html` in the browser. The production build outputs `index.html` and the `assets` folder at the repository root so it can be served via GitHub Pages.
+The Vite config sets `base: './'` so asset URLs remain relative and work from any subpath.
 
 Build for GitHub Pages:
 
