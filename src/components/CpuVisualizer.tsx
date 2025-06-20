@@ -31,36 +31,44 @@ export default function CpuVisualizer({ simulator }: Props) {
 
   let index = 0;
   return (
-    <div className="space-y-2">
+    <div className="space-y-4">
       {simulator.cpu.clusters.map((cluster, cIdx) => {
-        const count = cluster.cores * cluster.threadsPerCore;
-        const columns = Math.ceil(Math.sqrt(count));
-        const tiles = [];
-        for (let i = 0; i < count; i++) {
-          const load = loads[index] ?? 0;
-          const temp = temps[index] ?? 0;
-          const thr = throttles[index] ?? 0;
-          tiles.push(
+        const cores = [];
+        for (let i = 0; i < cluster.cores; i++) {
+          const threads = [];
+          for (let t = 0; t < cluster.threadsPerCore; t++) {
+            const load = loads[index] ?? 0;
+            const temp = temps[index] ?? 0;
+            const thr = throttles[index] ?? 0;
+            threads.push(
+              <div
+                key={index}
+                className="w-12 h-20 bg-gray-800 relative rounded overflow-hidden"
+              >
+                <div
+                  className="absolute bottom-0 left-0 right-0 bg-blue-500 transition-all"
+                  style={{ height: `${Math.round(load * 100)}%` }}
+                />
+                <span className="absolute top-0 left-0 text-[10px] px-1">
+                  {index}
+                </span>
+              </div>
+            );
+            index++;
+          }
+          cores.push(
             <div
-              key={index}
-              className="w-5 h-5 md:w-6 md:h-6 transition-colors"
-              style={{
-                backgroundColor: colorFor(load, temp, thr),
-                opacity: 0.7 + load * 0.3,
-              }}
-            />
+              key={`core-${i}`}
+              className="flex gap-1 p-1 border rounded border-gray-600"
+            >
+              {threads}
+            </div>
           );
-          index++;
         }
         return (
-          <div key={cIdx} className="border border-gray-600 p-1 rounded">
-            <div className="text-xs mb-1 text-gray-300">{cluster.name}</div>
-            <div
-              className="grid gap-1"
-              style={{ gridTemplateColumns: `repeat(${columns},1fr)` }}
-            >
-              {tiles}
-            </div>
+          <div key={cIdx} className="space-y-1">
+            <div className="text-xs text-gray-300">{cluster.name}</div>
+            <div className="flex flex-wrap gap-1">{cores}</div>
           </div>
         );
       })}
