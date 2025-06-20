@@ -1,0 +1,7 @@
+{
+  "name": "Intel i9",
+  "cores": 8,
+  "threads": 16,
+  "maxFrequency": 5.2,
+  "clusters": 1
+}

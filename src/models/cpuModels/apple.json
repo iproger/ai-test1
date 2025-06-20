@@ -1,0 +1,7 @@
+{
+  "name": "Apple M2",
+  "cores": 8,
+  "threads": 8,
+  "maxFrequency": 3.5,
+  "clusters": 2
+}
