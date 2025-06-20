@@ -1,0 +1,10 @@
+{
+  "name": "Ryzen 5950X",
+  "brand": "AMD",
+  "released": 2020,
+  "clusters": [
+    { "name": "Zen 3", "cores": 16, "threadsPerCore": 2, "baseFreq": 3.4, "turboFreq": 4.9, "cacheMB": 64, "avx": true }
+  ],
+  "gpu": { "cores": 0, "frequencyGHz": 0 },
+  "memory": { "type": "DDR4", "bandwidthGBps": 50 }
+}
