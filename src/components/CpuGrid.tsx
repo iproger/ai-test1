@@ -3,10 +3,13 @@ import { useAppState } from '../state/AppContext';
 
 function ThreadBox({ load }: { load: number }) {
   return (
-    <div className="w-[50px] h-[75px] border rounded overflow-hidden bg-gray-900 relative">
+    <div
+      className="position-relative bg-body-tertiary border border-secondary rounded"
+      style={{ width: '50px', height: '75px' }}
+    >
       <div
-        className="absolute bottom-0 w-full bg-green-500 transition-all duration-150 ease-linear"
-        style={{ height: `${load}%` }}
+        className="position-absolute bottom-0 start-0 bg-success"
+        style={{ width: '100%', height: `${load}%`, transition: 'height 0.15s linear' }}
       />
     </div>
   );
@@ -15,7 +18,7 @@ function ThreadBox({ load }: { load: number }) {
 function CpuGrid() {
   const { cores } = useAppState();
   return (
-    <div className="grid grid-cols-4 gap-2">
+    <div className="d-flex flex-wrap gap-2">
       {cores.map((core) => (
         <ThreadBox key={core.id} load={core.load} />
       ))}

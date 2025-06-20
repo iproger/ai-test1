@@ -1,6 +1,6 @@
 # CPU Simulator Dashboard
 
-This demo implements a very small portion of the CPU dashboard described in the specification. It is built with React, TypeScript, Vite, Tailwind CSS and Recharts.
+This demo implements a small portion of the CPU dashboard specification. It uses Bootstrap 5 for styling along with Tailwind utilities and is built with React, TypeScript, Vite and Recharts.
 
 Features:
 

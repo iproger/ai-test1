@@ -4,11 +4,15 @@ import { useAppState } from '../state/AppContext';
 function TaskQueue() {
   const { tasks } = useAppState();
   return (
-    <div className="space-y-2">
-      {tasks.length === 0 && <div className="p-2 border rounded">No tasks</div>}
+    <div className="list-group">
+      {tasks.length === 0 && (
+        <div className="list-group-item list-group-item-secondary text-center">
+          No tasks
+        </div>
+      )}
       {tasks.map((t) => (
-        <div key={t.id} className="p-2 border rounded">
-          {t.name}: {t.remaining.toFixed(1)}s left
+        <div key={t.id} className="list-group-item d-flex justify-content-between align-items-center">
+          <span>{t.name}: {t.remaining.toFixed(1)}s</span>
         </div>
       ))}
     </div>
