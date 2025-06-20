@@ -13,4 +13,8 @@ npm run dev
 
 ```bash
 npm run build
+
+The production build outputs files directly in the project root so they can be
+served via GitHub Pages. Use `npm run dev` during development, which temporarily
+copies `index.dev.html` to `index.html` before starting the Vite server.
 ```
