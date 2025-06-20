@@ -1,11 +1,20 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { modelList, CpuModel } from '../models';
 import { taskCategories, TaskPreset, getPresetMetric } from '../config/taskTypes';
+import { getProfile, TaskProfile } from '../config/taskProfiles';
 
 export interface Core {
   id: number;
   load: number;
   temperature: number;
+}
+
+export interface Settings {
+  updateInterval: number;
+  showNumbers: boolean;
+  showTemp: boolean;
+  throttling: boolean;
+  theme: 'light' | 'dark' | 'auto';
 }
 
 export type TaskPriority = 'Low' | 'Medium' | 'High';
@@ -19,6 +28,9 @@ export interface Task {
   presetId: string;
   cores: number;
   priority: TaskPriority;
+  assigned: number[];
+  profile: TaskProfile;
+  profileStep: number;
   baseCores: number;
   metricName: string;
   baseValue: number;
@@ -29,7 +41,9 @@ interface AppState {
   model: CpuModel;
   cores: Core[];
   tasks: Task[];
-  addTask: (task: Omit<Task, 'id' | 'name' | 'remaining' | 'baseCores' | 'metricName' | 'baseValue' | 'value'>) => void;
+  settings: Settings;
+  setSettings: (s: Settings) => void;
+  addTask: (task: Omit<Task, 'id' | 'name' | 'remaining' | 'assigned' | 'profile' | 'profileStep' | 'baseCores' | 'metricName' | 'baseValue' | 'value'>) => void;
   setModel: (model: CpuModel) => void;
 }
 
@@ -58,6 +72,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     const stored = localStorage.getItem('nextTaskId');
     return stored ? Number(stored) : 1;
   });
+  const [settings, setSettings] = useState<Settings>(() => {
+    const s = localStorage.getItem('settings');
+    return s
+      ? JSON.parse(s)
+      : {
+          updateInterval: 100,
+          showNumbers: false,
+          showTemp: false,
+          throttling: true,
+          theme: 'auto',
+        };
+  });
 
   useEffect(() => {
     setCores(createCores(model));
@@ -68,9 +94,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
       setCores(prev => {
         const newCores = prev.map(core => ({ ...core, load: Math.max(0, core.load - 5) }));
         tasks.forEach(task => {
-          for (let i = 0; i < task.cores && i < newCores.length; i++) {
-            newCores[i].load = Math.min(100, newCores[i].load + 100 / task.cores);
-          }
+          const step = task.profile.pattern[task.profileStep % task.profile.pattern.length];
+          task.assigned.forEach(idx => {
+            if (newCores[idx]) {
+              newCores[idx].load = Math.min(100, newCores[idx].load + step.load / task.assigned.length);
+            }
+          });
         });
         return newCores.map(c => ({
           ...c,
@@ -81,27 +110,32 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const conflict = prev.length > 1 ? 0.7 : 1;
         return prev
           .map(t => {
-            const newRemaining = t.remaining - 0.1;
+            const newRemaining = t.remaining - settings.updateInterval / 1000;
             const value = t.baseValue * Math.min(1, t.cores / t.baseCores) * conflict;
-            return { ...t, remaining: newRemaining, value };
+            const nextStep = (t.profileStep + 1) % t.profile.pattern.length;
+            return { ...t, remaining: newRemaining, value, profileStep: nextStep };
           })
           .filter(t => t.remaining > 0);
       });
-    }, 100);
+    }, settings.updateInterval);
     return () => clearInterval(id);
-  }, [tasks]);
+  }, [tasks, settings.updateInterval]);
 
   useEffect(() => {
     localStorage.setItem('tasks', JSON.stringify(tasks));
     localStorage.setItem('nextTaskId', nextId.toString());
-  }, [tasks, nextId]);
+    localStorage.setItem('settings', JSON.stringify(settings));
+  }, [tasks, nextId, settings]);
 
   const addTask = (
-    task: Omit<Task, 'id' | 'name' | 'remaining' | 'baseCores' | 'metricName' | 'baseValue' | 'value'>
+    task: Omit<Task, 'id' | 'name' | 'remaining' | 'assigned' | 'profile' | 'profileStep' | 'baseCores' | 'metricName' | 'baseValue' | 'value'>
   ) => {
     const preset = taskCategories
       .find(c => c.id === task.category)?.presets.find(p => p.id === task.presetId) as TaskPreset;
     const { metricName, baseValue } = getPresetMetric(preset);
+    // assign least loaded cores
+    const sorted = [...cores].sort((a,b)=>a.load-b.load).map(c=>c.id);
+    const assigned = sorted.slice(0, task.cores);
     setTasks(prev => [
       ...prev,
       {
@@ -112,6 +146,9 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         metricName,
         baseValue,
         value: baseValue,
+        assigned,
+        profile: getProfile(preset.id),
+        profileStep: 0,
         ...task,
       },
     ]);
@@ -119,7 +156,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   return (
-    <AppContext.Provider value={{ model, cores, tasks, addTask, setModel }}>
+    <AppContext.Provider value={{ model, cores, tasks, settings, setSettings, addTask, setModel }}>
       {children}
     </AppContext.Provider>
   );

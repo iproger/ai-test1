@@ -19,7 +19,7 @@ const TaskCard: React.FC<Props> = ({ task }) => {
           {task.name}
         </span>
         <span className="me-auto text-end small">
-          {task.value.toFixed(0)} {task.metricName}
+          {task.value.toFixed(1)} {task.metricName}
         </span>
         <span className="badge bg-secondary ms-2">{task.priority}</span>
       </div>
@@ -31,7 +31,8 @@ const TaskCard: React.FC<Props> = ({ task }) => {
       </div>
       {open && (
         <div className="card-body pt-2">
-          <p className="small mb-1">{task.cores} cores, {task.duration}s</p>
+          <p className="small mb-1">Cores: [{task.assigned.join(', ')}]</p>
+          <p className="small mb-1">Time left: {task.remaining.toFixed(1)}s / {task.duration}s</p>
           <p className="small mb-0 text-secondary">Type: {task.category}</p>
         </div>
       )}

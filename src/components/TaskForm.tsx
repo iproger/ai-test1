@@ -4,7 +4,7 @@ import { taskCategories, TaskCategory, TaskPreset } from '../config/taskTypes';
 
 function TaskForm() {
   const { addTask } = useAppState();
-  const [duration, setDuration] = useState(10);
+  const [duration, setDuration] = useState(60);
   const [category, setCategory] = useState<TaskCategory>(taskCategories[0]);
   const [preset, setPreset] = useState<TaskPreset>(taskCategories[0].presets[0]);
   const [cores, setCores] = useState<number>(taskCategories[0].presets[0].defaultCores);
@@ -20,6 +20,8 @@ function TaskForm() {
   useEffect(() => {
     setCores(preset.defaultCores);
   }, [preset]);
+
+  const summary = `${preset.name} task, ${cores} cores, ${priority.toLowerCase()} priority, ${duration}s`;
 
   return (
     <form
@@ -40,13 +42,14 @@ function TaskForm() {
       <div className="mb-2">
         <label className="form-label">Duration (s)</label>
         <input
-          type="number"
-          className="form-control"
+          type="range"
+          className="form-range"
+          min={5}
+          max={120}
           value={duration}
-          min={1}
-          max={60}
           onChange={(e) => setDuration(parseInt(e.target.value))}
         />
+        <div className="form-text">{duration}s</div>
       </div>
       <div className="mb-2">
         <label className="form-label">Category</label>
@@ -101,9 +104,7 @@ function TaskForm() {
           <option>High</option>
         </select>
       </div>
-      <p className="small text-secondary">
-        {preset.name} task, {cores} cores, {priority.toLowerCase()} priority
-      </p>
+      <p className="small text-secondary">{summary}</p>
       <button type="submit" className="btn btn-primary w-100">
         {adding ? 'Adding...' : 'Add Task'}
       </button>
