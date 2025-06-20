@@ -1,0 +1,15 @@
+{
+  "name": "AMD Ryzen 9",
+  "clusters": [
+    {
+      "name": "CCD0",
+      "cores": 8,
+      "threadsPerCore": 2
+    },
+    {
+      "name": "CCD1",
+      "cores": 8,
+      "threadsPerCore": 2
+    }
+  ]
+}
