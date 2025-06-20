@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import cpuModels from '../models/cpuModels'
+import { BUILD_NUMBER } from '../build'
 
 interface Props {
   onCpuChange: (name: string) => void
@@ -21,7 +22,10 @@ export function Header({ onCpuChange, onSettings }: Props) {
         ))}
       </select>
       <h1 className="text-lg hidden sm:block">CPU Simulator</h1>
-      <button className="p-2" onClick={onSettings}>Settings</button>
+      <div className="flex items-center gap-2">
+        <span className="text-sm">Build {BUILD_NUMBER}</span>
+        <button className="p-2" onClick={onSettings}>Settings</button>
+      </div>
     </header>
   )
 }

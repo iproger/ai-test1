@@ -15,3 +15,9 @@ Build for GitHub Pages:
 npm run build -- --outDir=.
 ```
 
+Run tests:
+
+```bash
+npm run test
+```
+
