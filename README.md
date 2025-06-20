@@ -1,6 +1,13 @@
 # CPU Simulator Dashboard
 
-This is a minimal prototype of a browser-based CPU dashboard built with React, TypeScript, Vite, Tailwind CSS and Recharts. The app simulates core load and temperature updates.
+This demo implements a very small portion of the CPU dashboard described in the specification. It is built with React, TypeScript, Vite, Tailwind CSS and Recharts.
+
+Features:
+
+- Select between a few predefined CPU models
+- Visual grid of threads that animates current load
+- Add simple tasks which increase core load and expire after a set duration
+- Basic bar chart showing per-thread load in real time
 
 ## Development
 
@@ -16,7 +23,7 @@ Run the development server:
 npm run dev
 ```
 
-Open `src/index.html` during development. The production build outputs `index.html` and the `assets` folder at the repository root for GitHub Pages.
+During development open `src/index.html` in the browser. The production build outputs `index.html` and the `assets` folder at the repository root so it can be served via GitHub Pages.
 
 Build for GitHub Pages:
 

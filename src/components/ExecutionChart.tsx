@@ -1,18 +1,16 @@
 import React from 'react';
-import { LineChart, Line, XAxis, YAxis } from 'recharts';
-
-const data = [
-  { name: 't1', value: 0 },
-  { name: 't2', value: 0 },
-];
+import { BarChart, Bar, XAxis, YAxis } from 'recharts';
+import { useAppState } from '../state/AppContext';
 
 function ExecutionChart() {
+  const { cores } = useAppState();
+  const data = cores.map(c => ({ name: c.id.toString(), load: c.load }));
   return (
-    <LineChart width={300} height={200} data={data}>
+    <BarChart width={300} height={200} data={data} className="mx-auto">
       <XAxis dataKey="name" />
-      <YAxis />
-      <Line type="monotone" dataKey="value" stroke="#8884d8" />
-    </LineChart>
+      <YAxis domain={[0, 100]} />
+      <Bar dataKey="load" fill="#38bdf8" />
+    </BarChart>
   );
 }
 
