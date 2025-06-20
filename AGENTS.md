@@ -57,4 +57,7 @@ Agents should avoid global mutable state. Use React context or explicit message 
 Development workflow:
 - Install dependencies with `npm install`.
 - Use `npm run dev` for development.
-- Run `npm run build` to verify the project builds successfully before committing.
+- Bump the `version` field in `package.json` for each new build so the header shows
+  the correct release number.
+- Run `npm run build` to generate production files in the project root and ensure
+  asset links are updated.
