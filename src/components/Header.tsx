@@ -21,7 +21,10 @@ export default function Header({ cpuIndex, setCpuIndex, openSettings }: Props) {
           </option>
         ))}
       </select>
-      <button onClick={openSettings} className="bg-gray-700 px-2">⚙</button>
+      <div className="flex items-center gap-4">
+        <span className="text-sm text-gray-300">v{__APP_VERSION__}</span>
+        <button onClick={openSettings} className="bg-gray-700 px-2">⚙</button>
+      </div>
     </header>
   );
 }
