@@ -1,12 +1,12 @@
 {
   "name": "ai-test1",
-  "version": "1.0.3",
+  "version": "1.0.4",
   "description": "",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "vite build --outDir .",
-    "dev": "cp index.dev.html index.html && vite",
+    "build": "vite build --outDir dist",
+    "dev": "vite",
     "start": "vite preview"
   },
   "keywords": [],
