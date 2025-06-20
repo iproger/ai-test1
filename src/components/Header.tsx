@@ -22,6 +22,7 @@ export default function Header({ cpuIndex, setCpuIndex, openSettings }: Props) {
         ))}
       </select>
       <div className="flex items-center gap-4">
+        <span className="font-semibold">CPU Simulator</span>
         <span className="text-sm text-gray-300">v{__APP_VERSION__}</span>
         <button onClick={openSettings} className="bg-gray-700 px-2">⚙</button>
       </div>

@@ -27,6 +27,15 @@ export default function SettingsPanel({ open, onClose }: Props) {
               <option>linear</option>
             </select>
           </label>
+          <label className="flex items-center text-sm gap-2">
+            <input type="checkbox" className="" /> Temperature
+          </label>
+          <label className="flex items-center text-sm gap-2">
+            <input type="checkbox" className="" /> Throttling
+          </label>
+          <label className="block text-sm">Max Temp
+            <input type="number" className="bg-gray-800 w-full mt-1" defaultValue={100} />
+          </label>
         </div>
       </div>
     </div>

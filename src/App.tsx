@@ -7,10 +7,11 @@ import TaskQueue from './components/TaskQueue';
 import ExecutionConsole from './components/ExecutionConsole';
 import CpuInfo from './components/CpuInfo';
 import SettingsPanel from './components/SettingsPanel';
+import { useLocalStorage } from './hooks/useLocalStorage';
 
 export default function App() {
-  const [cpuIndex, setCpuIndex] = useState(0);
-  const [sim, setSim] = useState(() => new CPUSimulator(defaultCPUs[0]));
+  const [cpuIndex, setCpuIndex] = useLocalStorage('cpuIndex', 0);
+  const [sim, setSim] = useState(() => new CPUSimulator(defaultCPUs[cpuIndex]));
   const [settingsOpen, setSettingsOpen] = useState(false);
 
   useEffect(() => {

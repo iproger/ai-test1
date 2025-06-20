@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import { CPUSimulator } from '../simulator/CPUSimulator';
-import { TaskInstance } from '../models/task';
+import { TaskInstance, LoadProfile, Intensity } from '../models/task';
 
 interface Props {
   simulator: CPUSimulator;
 }
 
 export default function TaskQueue({ simulator }: Props) {
-  const [name, setName] = useState('Task');
   const [tasks, setTasks] = useState<TaskInstance[]>([]);
+  const [name, setName] = useState('');
+  const [duration, setDuration] = useState(5);
+  const [intensity, setIntensity] = useState<Intensity>('medium');
+  const [profile, setProfile] = useState<LoadProfile>('INT');
 
   useEffect(() => {
     const id = setInterval(() => {
@@ -18,12 +21,13 @@ export default function TaskQueue({ simulator }: Props) {
   }, [simulator]);
 
   const addTask = () => {
+    if (!name) return;
     simulator.addTask({
       name,
-      durationMs: 5000,
-      loadProfile: 'INT',
-      intensity: 'medium',
-      assignedThreads: [0],
+      durationMs: duration * 1000,
+      loadProfile: profile,
+      intensity,
+      assignedThreads: [],
     });
     setName('');
   };
@@ -33,33 +37,70 @@ export default function TaskQueue({ simulator }: Props) {
   const cancel = (id: number) => simulator.cancelTask(id);
 
   return (
-    <div className="space-y-2">
-      <div className="flex">
+    <div className="space-y-4">
+      <div className="grid grid-cols-2 gap-2">
         <input
           value={name}
           onChange={e => setName(e.target.value)}
-          className="bg-gray-700 p-1 flex-1"
+          placeholder="Task name"
+          className="bg-gray-700 p-1 col-span-2"
         />
-        <button onClick={addTask} className="ml-2 bg-blue-600 px-2 text-white">
-          Add
+        <input
+          type="number"
+          min="1"
+          value={duration}
+          onChange={e => setDuration(Number(e.target.value))}
+          className="bg-gray-700 p-1"
+          placeholder="Duration (s)"
+        />
+        <select
+          value={intensity}
+          onChange={e => setIntensity(e.target.value as Intensity)}
+          className="bg-gray-700 p-1"
+        >
+          <option value="low">Low</option>
+          <option value="medium">Medium</option>
+          <option value="high">High</option>
+        </select>
+        <select
+          value={profile}
+          onChange={e => setProfile(e.target.value as LoadProfile)}
+          className="bg-gray-700 p-1"
+        >
+          <option value="INT">INT</option>
+          <option value="FP">FP</option>
+          <option value="AVX">AVX</option>
+          <option value="MIXED">MIXED</option>
+        </select>
+        <button
+          onClick={addTask}
+          className="col-span-2 bg-blue-600 text-white py-1 rounded"
+        >
+          Add Task
         </button>
       </div>
-      <ul className="space-y-1">
+      <div className="space-y-2">
         {tasks.map(t => (
-          <li key={t.id} className="text-sm flex items-center space-x-2">
-            <span className="flex-1">{t.name} - {t.status}</span>
-            {t.status === 'running' && (
-              <button onClick={() => pause(t.id)} className="text-xs bg-yellow-600 px-1">Pause</button>
-            )}
-            {t.status === 'paused' && (
-              <button onClick={() => resume(t.id)} className="text-xs bg-green-600 px-1">Resume</button>
-            )}
-            {t.status !== 'completed' && (
-              <button onClick={() => cancel(t.id)} className="text-xs bg-red-600 px-1">Cancel</button>
-            )}
-          </li>
+          <div key={t.id} className="bg-gray-800 p-2 rounded text-sm space-y-1">
+            <div className="flex justify-between">
+              <span className="font-medium">{t.name}</span>
+              <span className="text-gray-400">{t.status}</span>
+            </div>
+            <div className="flex gap-2 text-xs">
+              {t.status === 'running' && (
+                <button onClick={() => pause(t.id)} className="bg-yellow-600 px-2 rounded">Pause</button>
+              )}
+              {t.status === 'paused' && (
+                <button onClick={() => resume(t.id)} className="bg-green-600 px-2 rounded">Resume</button>
+              )}
+              {t.status !== 'completed' && (
+                <button onClick={() => cancel(t.id)} className="bg-red-600 px-2 rounded">Cancel</button>
+              )}
+            </div>
+          </div>
         ))}
-      </ul>
+        {tasks.length === 0 && <div className="text-sm text-gray-400">No tasks</div>}
+      </div>
     </div>
   );
 }

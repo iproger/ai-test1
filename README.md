@@ -1,6 +1,6 @@
 # CPU Simulator Dashboard
 
-A front-end CPU simulator built with React, TypeScript and Tailwind CSS. It visualizes CPU load per thread and allows enqueuing simple tasks that run on a simulated CPU model.
+A front-end CPU simulator built with React, TypeScript and Tailwind CSS. It visualizes CPU load per thread and allows enqueuing simple tasks that run on a simulated CPU model. The dashboard now groups cores by cluster and includes a richer task creation form and settings panel.
 
 ## Development
 
