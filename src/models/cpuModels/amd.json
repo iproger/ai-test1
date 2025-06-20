@@ -1,0 +1,7 @@
+{
+  "name": "AMD Ryzen",
+  "cores": 8,
+  "threads": 16,
+  "maxFrequency": 4.8,
+  "clusters": 1
+}

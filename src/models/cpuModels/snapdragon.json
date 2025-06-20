@@ -1,0 +1,7 @@
+{
+  "name": "Snapdragon X",
+  "cores": 8,
+  "threads": 8,
+  "maxFrequency": 3.0,
+  "clusters": 1
+}
