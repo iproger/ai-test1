@@ -38,10 +38,33 @@ export class CPUSimulator {
       ...def,
       id: this.nextTaskId++,
       remainingMs: def.durationMs,
-      status: 'queued',
+      status: 'running',
     };
     this.tasks.push(task);
     return task;
+  }
+
+  getTasks() {
+    return this.tasks;
+  }
+
+  pauseTask(id: number) {
+    const t = this.tasks.find(t => t.id === id);
+    if (t && t.status === 'running') t.status = 'paused';
+  }
+
+  resumeTask(id: number) {
+    const t = this.tasks.find(t => t.id === id);
+    if (t && t.status === 'paused') t.status = 'running';
+  }
+
+  cancelTask(id: number) {
+    const t = this.tasks.find(t => t.id === id);
+    if (t && t.status !== 'completed') {
+      t.status = 'completed';
+      t.assignedThreads = [];
+      t.remainingMs = 0;
+    }
   }
 
   start() {
@@ -123,5 +146,14 @@ export class CPUSimulator {
 
   getThrottling() {
     return this.threadThrottle.slice();
+  }
+
+  getTaskMetrics() {
+    return this.tasks.map(t => {
+      const load = this.getIntensityLoad(t.intensity);
+      const throttle = t.assignedThreads.some(i => this.threadThrottle[i]) ? 0.5 : 1;
+      const ops = Math.round(100 * load * throttle);
+      return { id: t.id, name: t.name, ops };
+    });
   }
 }

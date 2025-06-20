@@ -4,9 +4,10 @@ import { defaultCPUs } from '../cpuModels';
 interface Props {
   cpuIndex: number;
   setCpuIndex: (i: number) => void;
+  openSettings: () => void;
 }
 
-export default function Header({ cpuIndex, setCpuIndex }: Props) {
+export default function Header({ cpuIndex, setCpuIndex, openSettings }: Props) {
   return (
     <header className="flex items-center justify-between p-4 bg-gray-800">
       <select
@@ -20,6 +21,7 @@ export default function Header({ cpuIndex, setCpuIndex }: Props) {
           </option>
         ))}
       </select>
+      <button onClick={openSettings} className="bg-gray-700 px-2">⚙</button>
     </header>
   );
 }

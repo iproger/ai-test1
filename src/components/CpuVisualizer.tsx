@@ -7,11 +7,13 @@ interface Props {
 
 export default function CpuVisualizer({ simulator }: Props) {
   const [loads, setLoads] = useState<number[]>([]);
+  const [throttles, setThrottles] = useState<number[]>([]);
 
   useEffect(() => {
     simulator.start();
     const id = setInterval(() => {
       setLoads(Array.from(simulator.getLoads()));
+      setThrottles(Array.from(simulator.getThrottling()));
     }, 50);
     return () => {
       clearInterval(id);
@@ -27,8 +29,11 @@ export default function CpuVisualizer({ simulator }: Props) {
       {loads.map((load, i) => (
         <div
           key={i}
-          className="w-6 h-6 bg-blue-500"
-          style={{ opacity: load }}
+          className="w-6 h-6"
+          style={{
+            backgroundColor: throttles[i] ? '#b91c1c' : '#3b82f6',
+            opacity: load,
+          }}
         />
       ))}
     </div>
