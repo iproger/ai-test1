@@ -5,9 +5,10 @@ This demo implements a small portion of the CPU dashboard specification. It uses
 Features:
 
 - Select between a few predefined CPU models
-- Visual grid of threads that animates current load
-- Add simple tasks which increase core load and expire after a set duration
-- Basic bar chart showing per-thread load in real time
+- Visual grid of threads with animated load bars
+- Add tasks with type, core count and priority
+- Task list with progress bars
+- Simple real-time load charts
 
 ## Development
 

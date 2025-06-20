@@ -5,6 +5,7 @@ import CpuDetails from './components/CpuDetails';
 import TaskForm from './components/TaskForm';
 import TaskQueue from './components/TaskQueue';
 import ExecutionChart from './components/ExecutionChart';
+import CpuGraph from './components/CpuGraph';
 import SettingsDrawer from './components/SettingsDrawer';
 import { AppProvider } from './state/AppContext';
 
@@ -17,6 +18,9 @@ function App() {
           <div className="row g-4">
             <div className="col-md-8">
               <CpuGrid />
+              <div className="mt-3">
+                <CpuGraph />
+              </div>
               <div className="mt-3">
                 <ExecutionChart />
               </div>

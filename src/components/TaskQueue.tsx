@@ -1,19 +1,16 @@
 import React from 'react';
 import { useAppState } from '../state/AppContext';
+import TaskCard from './TaskCard';
 
 function TaskQueue() {
   const { tasks } = useAppState();
   return (
-    <div className="list-group">
+    <div>
       {tasks.length === 0 && (
-        <div className="list-group-item list-group-item-secondary text-center">
-          No tasks
-        </div>
+        <div className="text-center text-secondary py-2">No tasks</div>
       )}
       {tasks.map((t) => (
-        <div key={t.id} className="list-group-item d-flex justify-content-between align-items-center">
-          <span>{t.name}: {t.remaining.toFixed(1)}s</span>
-        </div>
+        <TaskCard key={t.id} task={t} />
       ))}
     </div>
   );

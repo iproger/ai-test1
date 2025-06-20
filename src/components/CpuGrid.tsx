@@ -2,14 +2,15 @@ import React from 'react';
 import { useAppState } from '../state/AppContext';
 
 function ThreadBox({ load }: { load: number }) {
+  const fillColor = load > 80 ? 'bg-success' : load > 20 ? 'bg-success-subtle' : 'bg-success-subtle';
   return (
     <div
-      className="position-relative bg-body-tertiary border border-secondary rounded"
-      style={{ width: '50px', height: '75px' }}
+      className="position-relative border rounded shadow-sm bg-body-tertiary"
+      style={{ width: '40px', height: '70px' }}
     >
       <div
-        className="position-absolute bottom-0 start-0 bg-success"
-        style={{ width: '100%', height: `${load}%`, transition: 'height 0.15s linear' }}
+        className={`position-absolute bottom-0 start-0 ${fillColor}`}
+        style={{ width: '100%', height: `${load}%`, transition: 'height 0.3s ease-in-out' }}
       />
     </div>
   );

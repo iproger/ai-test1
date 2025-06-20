@@ -2,7 +2,8 @@ import React from 'react';
 import { useAppState } from '../state/AppContext';
 
 const CpuDetails: React.FC = () => {
-  const { model } = useAppState();
+  const { model, cores } = useAppState();
+  const avgTemp = cores.reduce((a, c) => a + c.temperature, 0) / cores.length;
   return (
     <div className="card text-body bg-body-secondary">
       <div className="card-body">
@@ -16,6 +17,9 @@ const CpuDetails: React.FC = () => {
             </li>
           ))}
         </ul>
+        <p className="mb-1"><strong>Avg Temp:</strong> {avgTemp.toFixed(1)}°C</p>
+        <p className="mb-1"><strong>Voltage:</strong> 1.1V</p>
+        <p className="mb-0"><strong>Thermal State:</strong> {avgTemp > 80 ? 'Throttling' : 'Nominal'}</p>
       </div>
     </div>
   );

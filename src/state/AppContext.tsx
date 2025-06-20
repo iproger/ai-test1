@@ -7,18 +7,24 @@ export interface Core {
   temperature: number;
 }
 
+export type TaskType = 'INT' | 'FLOAT' | 'MIXED' | 'IO';
+export type TaskPriority = 'Low' | 'Medium' | 'High';
+
 export interface Task {
   id: number;
   name: string;
   duration: number; // seconds
   remaining: number; // seconds
+  type: TaskType;
+  cores: number;
+  priority: TaskPriority;
 }
 
 interface AppState {
   model: CpuModel;
   cores: Core[];
   tasks: Task[];
-  addTask: (name: string, duration: number) => void;
+  addTask: (task: Omit<Task, 'id' | 'name' | 'remaining'>) => void;
   setModel: (model: CpuModel) => void;
 }
 
@@ -39,7 +45,14 @@ function createCores(model: CpuModel): Core[] {
 export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [model, setModel] = useState<CpuModel>(modelList[0]);
   const [cores, setCores] = useState<Core[]>(createCores(modelList[0]));
-  const [tasks, setTasks] = useState<Task[]>([]);
+  const [tasks, setTasks] = useState<Task[]>(() => {
+    const stored = localStorage.getItem('tasks');
+    return stored ? JSON.parse(stored) : [];
+  });
+  const [nextId, setNextId] = useState<number>(() => {
+    const stored = localStorage.getItem('nextTaskId');
+    return stored ? Number(stored) : 1;
+  });
 
   useEffect(() => {
     setCores(createCores(model));
@@ -47,11 +60,18 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
 
   useEffect(() => {
     const id = setInterval(() => {
-      setCores(prev => prev.map(core => ({
-        ...core,
-        load: tasks.length ? 100 : Math.max(0, core.load - 5),
-        temperature: 40 + core.load * 0.5,
-      })));
+      setCores(prev => {
+        const newCores = prev.map(core => ({ ...core, load: Math.max(0, core.load - 5) }));
+        tasks.forEach(task => {
+          for (let i = 0; i < task.cores && i < newCores.length; i++) {
+            newCores[i].load = Math.min(100, newCores[i].load + (100 / task.cores));
+          }
+        });
+        return newCores.map(c => ({
+          ...c,
+          temperature: 40 + c.load * 0.5,
+        }));
+      });
       setTasks(prev => prev
         .map(t => ({ ...t, remaining: t.remaining - 0.1 }))
         .filter(t => t.remaining > 0));
@@ -59,11 +79,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     return () => clearInterval(id);
   }, [tasks]);
 
-  const addTask = (name: string, duration: number) => {
+  useEffect(() => {
+    localStorage.setItem('tasks', JSON.stringify(tasks));
+    localStorage.setItem('nextTaskId', nextId.toString());
+  }, [tasks, nextId]);
+
+  const addTask = (task: Omit<Task, 'id' | 'name' | 'remaining'>) => {
     setTasks(prev => [
       ...prev,
-      { id: prev.length + 1, name, duration, remaining: duration },
+      {
+        id: nextId,
+        name: `Task #${nextId}`,
+        remaining: task.duration,
+        ...task,
+      },
     ]);
+    setNextId(prev => prev + 1);
   };
 
   return (

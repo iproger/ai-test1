@@ -11,7 +11,7 @@ function ExecutionChart() {
         <BarChart width={300} height={200} data={data} className="mx-auto">
           <XAxis dataKey="name" />
           <YAxis domain={[0, 100]} />
-          <Bar dataKey="load" fill="#0d6efd" />
+          <Bar dataKey="load" fill="#0d6efd" isAnimationActive={false} />
         </BarChart>
       </div>
     </div>
