@@ -15,10 +15,13 @@ const TaskCard: React.FC<Props> = ({ task }) => {
         onClick={() => setOpen(!open)}
         role="button"
       >
-        <span>
-          {task.name} - {task.type}
+        <span className="me-2">
+          {task.name}
         </span>
-        <span className="badge bg-secondary">{task.priority}</span>
+        <span className="me-auto text-end small">
+          {task.value.toFixed(0)} {task.metricName}
+        </span>
+        <span className="badge bg-secondary ms-2">{task.priority}</span>
       </div>
       <div className="progress" style={{ height: '4px' }}>
         <div
@@ -28,7 +31,8 @@ const TaskCard: React.FC<Props> = ({ task }) => {
       </div>
       {open && (
         <div className="card-body pt-2">
-          <p className="small mb-2">{task.cores} cores, {task.duration}s</p>
+          <p className="small mb-1">{task.cores} cores, {task.duration}s</p>
+          <p className="small mb-0 text-secondary">Type: {task.category}</p>
         </div>
       )}
     </div>

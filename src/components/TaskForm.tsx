@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
-import { useAppState, TaskPriority, TaskType } from '../state/AppContext';
+import React, { useState, useEffect } from 'react';
+import { useAppState, TaskPriority } from '../state/AppContext';
+import { taskCategories, TaskCategory, TaskPreset } from '../config/taskTypes';
 
 function TaskForm() {
   const { addTask } = useAppState();
-  const [duration, setDuration] = useState(5);
-  const [type, setType] = useState<TaskType>('INT');
-  const [cores, setCores] = useState(1);
+  const [duration, setDuration] = useState(10);
+  const [category, setCategory] = useState<TaskCategory>(taskCategories[0]);
+  const [preset, setPreset] = useState<TaskPreset>(taskCategories[0].presets[0]);
+  const [cores, setCores] = useState<number>(taskCategories[0].presets[0].defaultCores);
   const [priority, setPriority] = useState<TaskPriority>('Medium');
   const [adding, setAdding] = useState(false);
+
+  // update presets when category changes
+  useEffect(() => {
+    setPreset(category.presets[0]);
+    setCores(category.presets[0].defaultCores);
+  }, [category]);
+
+  useEffect(() => {
+    setCores(preset.defaultCores);
+  }, [preset]);
 
   return (
     <form
@@ -15,7 +27,13 @@ function TaskForm() {
       onSubmit={(e) => {
         e.preventDefault();
         setAdding(true);
-        addTask({ duration, type, cores, priority });
+        addTask({
+          duration,
+          category: category.id,
+          presetId: preset.id,
+          cores,
+          priority,
+        });
         setTimeout(() => setAdding(false), 300);
       }}
     >
@@ -31,16 +49,33 @@ function TaskForm() {
         />
       </div>
       <div className="mb-2">
-        <label className="form-label">Type</label>
+        <label className="form-label">Category</label>
         <select
           className="form-select"
-          value={type}
-          onChange={(e) => setType(e.target.value as TaskType)}
+          value={category.id}
+          onChange={(e) => {
+            const cat = taskCategories.find(c => c.id === e.target.value) as TaskCategory;
+            if (cat) setCategory(cat);
+          }}
         >
-          <option>INT</option>
-          <option>FLOAT</option>
-          <option>MIXED</option>
-          <option>IO</option>
+          {taskCategories.map(c => (
+            <option key={c.id} value={c.id}>{c.name}</option>
+          ))}
+        </select>
+      </div>
+      <div className="mb-2">
+        <label className="form-label">Preset</label>
+        <select
+          className="form-select"
+          value={preset.id}
+          onChange={(e) => {
+            const p = category.presets.find(pr => pr.id === e.target.value) as TaskPreset;
+            if (p) setPreset(p);
+          }}
+        >
+          {category.presets.map(p => (
+            <option key={p.id} value={p.id}>{p.name}</option>
+          ))}
         </select>
       </div>
       <div className="mb-2">
@@ -67,7 +102,7 @@ function TaskForm() {
         </select>
       </div>
       <p className="small text-secondary">
-        {type} task, {cores} cores, {priority.toLowerCase()} priority
+        {preset.name} task, {cores} cores, {priority.toLowerCase()} priority
       </p>
       <button type="submit" className="btn btn-primary w-100">
         {adding ? 'Adding...' : 'Add Task'}

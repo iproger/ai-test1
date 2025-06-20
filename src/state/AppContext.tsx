@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { modelList, CpuModel } from '../models';
+import { taskCategories, TaskPreset, getPresetMetric } from '../config/taskTypes';
 
 export interface Core {
   id: number;
@@ -7,7 +8,6 @@ export interface Core {
   temperature: number;
 }
 
-export type TaskType = 'INT' | 'FLOAT' | 'MIXED' | 'IO';
 export type TaskPriority = 'Low' | 'Medium' | 'High';
 
 export interface Task {
@@ -15,16 +15,21 @@ export interface Task {
   name: string;
   duration: number; // seconds
   remaining: number; // seconds
-  type: TaskType;
+  category: string;
+  presetId: string;
   cores: number;
   priority: TaskPriority;
+  baseCores: number;
+  metricName: string;
+  baseValue: number;
+  value: number;
 }
 
 interface AppState {
   model: CpuModel;
   cores: Core[];
   tasks: Task[];
-  addTask: (task: Omit<Task, 'id' | 'name' | 'remaining'>) => void;
+  addTask: (task: Omit<Task, 'id' | 'name' | 'remaining' | 'baseCores' | 'metricName' | 'baseValue' | 'value'>) => void;
   setModel: (model: CpuModel) => void;
 }
 
@@ -64,7 +69,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const newCores = prev.map(core => ({ ...core, load: Math.max(0, core.load - 5) }));
         tasks.forEach(task => {
           for (let i = 0; i < task.cores && i < newCores.length; i++) {
-            newCores[i].load = Math.min(100, newCores[i].load + (100 / task.cores));
+            newCores[i].load = Math.min(100, newCores[i].load + 100 / task.cores);
           }
         });
         return newCores.map(c => ({
@@ -72,9 +77,16 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           temperature: 40 + c.load * 0.5,
         }));
       });
-      setTasks(prev => prev
-        .map(t => ({ ...t, remaining: t.remaining - 0.1 }))
-        .filter(t => t.remaining > 0));
+      setTasks(prev => {
+        const conflict = prev.length > 1 ? 0.7 : 1;
+        return prev
+          .map(t => {
+            const newRemaining = t.remaining - 0.1;
+            const value = t.baseValue * Math.min(1, t.cores / t.baseCores) * conflict;
+            return { ...t, remaining: newRemaining, value };
+          })
+          .filter(t => t.remaining > 0);
+      });
     }, 100);
     return () => clearInterval(id);
   }, [tasks]);
@@ -84,13 +96,22 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     localStorage.setItem('nextTaskId', nextId.toString());
   }, [tasks, nextId]);
 
-  const addTask = (task: Omit<Task, 'id' | 'name' | 'remaining'>) => {
+  const addTask = (
+    task: Omit<Task, 'id' | 'name' | 'remaining' | 'baseCores' | 'metricName' | 'baseValue' | 'value'>
+  ) => {
+    const preset = taskCategories
+      .find(c => c.id === task.category)?.presets.find(p => p.id === task.presetId) as TaskPreset;
+    const { metricName, baseValue } = getPresetMetric(preset);
     setTasks(prev => [
       ...prev,
       {
         id: nextId,
-        name: `Task #${nextId}`,
+        name: `${preset.name} #${nextId}`,
         remaining: task.duration,
+        baseCores: preset.defaultCores,
+        metricName,
+        baseValue,
+        value: baseValue,
         ...task,
       },
     ]);
