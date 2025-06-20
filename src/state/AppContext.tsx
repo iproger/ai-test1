@@ -66,7 +66,36 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   const [cores, setCores] = useState<Core[]>(createCores(modelList[0]));
   const [tasks, setTasks] = useState<Task[]>(() => {
     const stored = localStorage.getItem('tasks');
-    return stored ? JSON.parse(stored) : [];
+    if (!stored) return [];
+    try {
+      const parsed = JSON.parse(stored);
+      if (!Array.isArray(parsed)) return [];
+      return parsed.map((t: any) => {
+        const preset = taskCategories
+          .find(c => c.id === t.category)?.presets.find(p => p.id === t.presetId) as TaskPreset | undefined;
+        const profile = t.profile || getProfile(t.presetId);
+        const metric = preset ? getPresetMetric(preset) : { metricName: '', baseValue: 0 };
+        return {
+          id: t.id ?? 0,
+          name: t.name || `${preset?.name ?? 'Task'} #${t.id}`,
+          duration: t.duration ?? 0,
+          remaining: t.remaining ?? t.duration ?? 0,
+          category: t.category,
+          presetId: t.presetId,
+          cores: t.cores ?? preset?.defaultCores ?? 1,
+          priority: t.priority ?? 'Low',
+          assigned: Array.isArray(t.assigned) ? t.assigned : [],
+          profile,
+          profileStep: t.profileStep ?? 0,
+          baseCores: t.baseCores ?? preset?.defaultCores ?? 1,
+          metricName: t.metricName ?? metric.metricName,
+          baseValue: t.baseValue ?? metric.baseValue,
+          value: t.value ?? metric.baseValue,
+        } as Task;
+      });
+    } catch {
+      return [];
+    }
   });
   const [nextId, setNextId] = useState<number>(() => {
     const stored = localStorage.getItem('nextTaskId');
