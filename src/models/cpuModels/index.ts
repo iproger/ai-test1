@@ -1,7 +1,7 @@
-import apple from './apple.json'
-import amd from './amd.json'
-import intel from './intel.json'
-import snapdragon from './snapdragon.json'
+import apple from './apple.json' assert { type: 'json' }
+import amd from './amd.json' assert { type: 'json' }
+import intel from './intel.json' assert { type: 'json' }
+import snapdragon from './snapdragon.json' assert { type: 'json' }
 import type { CpuModel } from './types'
 
 const models = {
