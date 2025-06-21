@@ -1,11 +1,11 @@
 import { render, screen } from '@testing-library/react'
 import { describe, it, expect } from 'vitest'
 import { Header } from './components/Header'
-import { BUILD_NUMBER } from './build'
 
 describe('Header', () => {
-  it('shows build number', () => {
+  it('shows version', () => {
     render(<Header onCpuChange={() => {}} onSettings={() => {}} />)
-    expect(screen.getByText(`Build ${BUILD_NUMBER}`)).toBeTruthy()
+    expect(screen.getByText(`v${import.meta.env.VITE_APP_VERSION}`)).toBeTruthy()
   })
 })
+

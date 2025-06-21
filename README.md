@@ -12,7 +12,7 @@ npm run dev
 Build for GitHub Pages:
 
 ```bash
-npm run build -- --outDir=.
+npm run build
 ```
 
 Run tests:
