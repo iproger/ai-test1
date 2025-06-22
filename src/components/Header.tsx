@@ -21,7 +21,7 @@ function Header() {
           ))}
         </select>
         <div className="d-flex align-items-center gap-3">
-          <span className="small">v1.1.1</span>
+          <span className="small">v2.0</span>
           <button className="btn btn-link text-light" data-bs-toggle="offcanvas" data-bs-target="#settingsDrawer" aria-label="Settings">
             <i className="bi bi-gear-fill" />
           </button>
