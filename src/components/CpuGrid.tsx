@@ -22,7 +22,7 @@ function ThreadBox({ id, load, history, showNumbers, tasksOnCore }: BoxProps) {
     const step = width / history.length;
     ctx.fillStyle = '#198754';
     history.forEach((val, i) => {
-      const x = width - (i + 1) * step;
+      const x = i * step;
       const h = (val / 100) * height;
       ctx.fillRect(x, height - h, step - 1, h);
     });

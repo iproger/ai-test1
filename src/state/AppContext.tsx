@@ -45,6 +45,7 @@ interface AppState {
   settings: Settings;
   setSettings: (s: Settings) => void;
   addTask: (task: Omit<Task, 'id' | 'name' | 'remaining' | 'assigned' | 'profile' | 'profileStep' | 'baseCores' | 'metricName' | 'baseValue' | 'value'>) => void;
+  removeTask: (id: number) => void;
   setModel: (model: CpuModel) => void;
 }
 
@@ -126,9 +127,11 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         const newCores = prev.map(core => ({ ...core, load: Math.max(0, core.load - 5) }));
         tasks.forEach(task => {
           const step = task.profile.pattern[task.profileStep % task.profile.pattern.length];
+          const jitter = step.load * (Math.random() * 0.2 - 0.1);
+          const loadValue = Math.max(0, step.load + jitter);
           task.assigned.forEach(idx => {
             if (newCores[idx]) {
-              newCores[idx].load = Math.min(100, newCores[idx].load + step.load / task.assigned.length);
+              newCores[idx].load = Math.min(100, newCores[idx].load + loadValue / task.assigned.length);
             }
           });
         });
@@ -147,7 +150,8 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         return prev
           .map(t => {
             const newRemaining = t.remaining - settings.updateInterval / 1000;
-            const value = t.baseValue * Math.min(1, t.cores / t.baseCores) * conflict;
+            const stepLoad = t.profile.pattern[t.profileStep % t.profile.pattern.length].load / 100;
+            const value = t.baseValue * Math.min(1, t.cores / t.baseCores) * conflict * stepLoad;
             const nextStep = (t.profileStep + 1) % t.profile.pattern.length;
             return { ...t, remaining: newRemaining, value, profileStep: nextStep };
           })
@@ -191,8 +195,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
     setNextId(prev => prev + 1);
   };
 
+  const removeTask = (id: number) => {
+    setTasks(prev => prev.filter(t => t.id !== id));
+  };
+
   return (
-    <AppContext.Provider value={{ model, cores, tasks, settings, setSettings, addTask, setModel }}>
+    <AppContext.Provider value={{ model, cores, tasks, settings, setSettings, addTask, removeTask, setModel }}>
       {children}
     </AppContext.Provider>
   );
