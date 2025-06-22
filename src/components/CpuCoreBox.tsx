@@ -26,7 +26,7 @@ export function CpuCoreBox({ thread }: Props) {
     const barWidth = 2
     const gap = 1
     history.forEach((value, idx) => {
-      const x = canvas.width - (idx + 1) * (barWidth + gap)
+      const x = idx * (barWidth + gap)
       const h = value * canvas.height
       ctx.fillStyle = '#3b82f6'
       ctx.fillRect(x, canvas.height - h, barWidth, h)

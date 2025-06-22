@@ -10,6 +10,7 @@ import cpuModels from './models/cpuModels'
 import type { CpuModel } from "./models/cpuModels/types"
 import { useCpuStore } from './state/store'
 import { startSimulation } from './utils/simulationLoop'
+import { initCores } from './state/cores'
 
 function initCpu(name: string) {
   const model = (cpuModels as Record<string, CpuModel>)[name]
@@ -23,6 +24,7 @@ function initCpu(name: string) {
     }
   }
   useCpuStore.setState({ threads })
+  initCores(threads)
 }
 
 function App() {
