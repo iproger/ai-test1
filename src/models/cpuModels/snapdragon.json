@@ -1,0 +1,15 @@
+{
+  "name": "Snapdragon X Elite",
+  "clusters": [
+    {
+      "name": "Gold",
+      "cores": 4,
+      "threadsPerCore": 1
+    },
+    {
+      "name": "Silver",
+      "cores": 4,
+      "threadsPerCore": 1
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "Apple M1",
+  "clusters": [
+    {
+      "name": "Performance",
+      "cores": 4,
+      "threadsPerCore": 1
+    },
+    {
+      "name": "Efficiency",
+      "cores": 4,
+      "threadsPerCore": 1
+    }
+  ]
+}
