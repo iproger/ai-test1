@@ -31,10 +31,10 @@ function ThreadBox({ id, load, history, showNumbers, tasksOnCore }: BoxProps) {
   return (
     <div
       className="position-relative border rounded shadow-sm bg-body-tertiary"
-      style={{ width: '50px', height: '75px' }}
+      style={{ width: '75px', height: '100px' }}
       title={`Core ${id}\nUtilization: ${load.toFixed(0)}%\nTasks: ${tasksOnCore.join(', ') || 'none'}`}
     >
-      <canvas ref={canvasRef} width={50} height={75} className="w-100 h-100" />
+      <canvas ref={canvasRef} width={75} height={100} className="w-100 h-100" />
       {showNumbers && (
         <span className="position-absolute top-0 start-0 small text-white px-1" style={{ fontSize: '0.6rem' }}>{id}</span>
       )}

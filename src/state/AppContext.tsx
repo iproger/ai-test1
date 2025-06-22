@@ -134,7 +134,7 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
         });
         return newCores.map(c => {
           const history = [...c.history, c.load];
-          if (history.length > 30) history.shift();
+          if (history.length > 50) history.shift();
           return {
             ...c,
             temperature: 40 + c.load * 0.5,
