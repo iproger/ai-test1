@@ -7,6 +7,7 @@ export interface Core {
   id: number;
   load: number;
   temperature: number;
+  history: number[];
 }
 
 export interface Settings {
@@ -58,6 +59,7 @@ function createCores(model: CpuModel): Core[] {
     id: i,
     load: 0,
     temperature: 40,
+    history: [],
   }));
 }
 
@@ -130,10 +132,15 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
             }
           });
         });
-        return newCores.map(c => ({
-          ...c,
-          temperature: 40 + c.load * 0.5,
-        }));
+        return newCores.map(c => {
+          const history = [...c.history, c.load];
+          if (history.length > 30) history.shift();
+          return {
+            ...c,
+            temperature: 40 + c.load * 0.5,
+            history,
+          };
+        });
       });
       setTasks(prev => {
         const conflict = prev.length > 1 ? 0.7 : 1;
