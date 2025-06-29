@@ -1,0 +1,11 @@
+{
+  "name": "Intel Core i9-13900K",
+  "brand": "Intel",
+  "released": 2022,
+  "clusters": [
+    { "name": "Performance", "cores": 8, "threadsPerCore": 2, "baseFreq": 3.0, "turboFreq": 5.8, "cacheMB": 36, "avx": true },
+    { "name": "Efficiency", "cores": 16, "threadsPerCore": 1, "baseFreq": 2.2, "turboFreq": 4.3, "cacheMB": 24, "avx": false }
+  ],
+  "gpu": { "cores": 2, "frequencyGHz": 1.5 },
+  "memory": { "type": "DDR5", "bandwidthGBps": 90 }
+}

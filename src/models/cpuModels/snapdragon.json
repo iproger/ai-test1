@@ -1,0 +1,12 @@
+{
+  "name": "Snapdragon X Elite",
+  "brand": "Qualcomm",
+  "released": 2024,
+  "clusters": [
+    { "name": "Prime", "cores": 1, "threadsPerCore": 1, "baseFreq": 3.8, "turboFreq": 4.0, "cacheMB": 4, "avx": true },
+    { "name": "Performance", "cores": 3, "threadsPerCore": 1, "baseFreq": 3.4, "turboFreq": 3.8, "cacheMB": 3, "avx": true },
+    { "name": "Efficiency", "cores": 4, "threadsPerCore": 1, "baseFreq": 2.2, "turboFreq": 2.5, "cacheMB": 2, "avx": false }
+  ],
+  "gpu": { "cores": 2, "frequencyGHz": 1.1 },
+  "memory": { "type": "LPDDR5X", "bandwidthGBps": 70 }
+}

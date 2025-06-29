@@ -1,0 +1,27 @@
+{
+  "name": "Apple A17 Pro",
+  "brand": "Apple",
+  "released": 2023,
+  "clusters": [
+    {
+      "name": "Performance",
+      "cores": 2,
+      "threadsPerCore": 1,
+      "baseFreq": 3.5,
+      "turboFreq": 3.7,
+      "cacheMB": 8,
+      "avx": true
+    },
+    {
+      "name": "Efficiency",
+      "cores": 4,
+      "threadsPerCore": 1,
+      "baseFreq": 2.0,
+      "turboFreq": 2.2,
+      "cacheMB": 4,
+      "avx": false
+    }
+  ],
+  "gpu": { "cores": 6, "frequencyGHz": 1.2 },
+  "memory": { "type": "LPDDR5", "bandwidthGBps": 100 }
+}
