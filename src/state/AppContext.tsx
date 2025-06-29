@@ -2,6 +2,7 @@ import React, { createContext, useContext, useState, useEffect } from 'react';
 import { modelList, CpuModel } from '../models';
 import { taskCategories, TaskPreset, getPresetMetric } from '../config/taskTypes';
 import { getProfile, TaskProfile } from '../config/taskProfiles';
+import { pushHistory } from '../utils/history';
 
 export interface Core {
   id: number;
@@ -136,11 +137,12 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
           });
         });
         return newCores.map(c => {
-          const history = [...c.history, c.load];
-          if (history.length > 50) history.shift();
+          const history = pushHistory(c.history, c.load, 50);
+          const targetTemp = 40 + c.load * 0.5;
+          const temperature = c.temperature + (targetTemp - c.temperature) * 0.1;
           return {
             ...c,
-            temperature: 40 + c.load * 0.5,
+            temperature,
             history,
           };
         });
@@ -196,6 +198,10 @@ export const AppProvider: React.FC<{ children: React.ReactNode }> = ({ children 
   };
 
   const removeTask = (id: number) => {
+    const task = tasks.find(t => t.id === id);
+    if (task) {
+      setCores(prev => prev.map(c => task.assigned.includes(c.id) ? { ...c, load: 0 } : c));
+    }
     setTasks(prev => prev.filter(t => t.id !== id));
   };
 
